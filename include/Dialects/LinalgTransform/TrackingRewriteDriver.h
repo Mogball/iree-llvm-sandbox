@@ -9,11 +9,11 @@
 #ifndef MLIR_DIALECT_LINALG_TRANSFORMS_TRACKINGREWRITEDRIVER_H
 #define MLIR_DIALECT_LINALG_TRANSFORMS_TRACKINGREWRITEDRIVER_H
 
+#include "mlir/Dialect/Linalg/IR/LinalgInterfaces.h"
 #include "mlir/Support/LLVM.h"
 #include "mlir/Transforms/GreedyPatternRewriteDriver.h"
 
 namespace mlir {
-
 /// Apply the given list of transformations to the regions of the
 /// isolated-from-above operation `root` greedily until convergence. Update
 /// Linalg operations in values of `trackedOperations` if they are replaced by

@@ -32,10 +32,19 @@ namespace {
 /// applies the locally optimal patterns in a roughly "bottom up" way.
 class GreedyPatternRewriteDriver : public RewriteListener {
 public:
+//===----------------------------------------------------------------------===//
+// BEGIN copied from mlir/lib/Transforms/Utils/GreedyPatternRewriteDriver.cpp
+//===----------------------------------------------------------------------===//
   explicit GreedyPatternRewriteDriver(MLIRContext *ctx,
                                       const FrozenRewritePatternSet &patterns,
                                       const GreedyRewriteConfig &config,
+//===----------------------------------------------------------------------===//
+// END copied from mlir/lib/Transforms/Utils/GreedyPatternRewriteDriver.cpp
+//===----------------------------------------------------------------------===//
                                       RewriteListener *listener);
+//===----------------------------------------------------------------------===//
+// BEGIN copied from mlir/lib/Transforms/Utils/GreedyPatternRewriteDriver.cpp
+//===----------------------------------------------------------------------===//
 
   /// Simplify the operations within the given regions.
   bool simplify(MutableArrayRef<Region> regions);
@@ -49,31 +58,37 @@ public:
   /// If the specified operation is in the worklist, remove it.
   void removeFromWorklist(Operation *op);
 
+protected:
   // Implement the hook for inserting operations, and make sure that newly
   // inserted ops are added to the worklist for processing.
   void notifyOperationInserted(Operation *op) override;
 
-  // If an operation is about to be removed, make sure it is not in our
-  // worklist anymore because we'd get dangling references to it.
-  void notifyOperationRemoved(Operation *op) override;
-
-  // When the root of a pattern is about to be replaced, it can trigger
-  // simplifications to its users - make sure to add them to the worklist
-  // before the root is changed.
-  void notifyOperationReplaced(Operation *op, ValueRange newValues) override;
-
-  /// PatternRewriter hook for notifying match failure reasons.
-  void
-  notifyMatchFailure(Operation *op,
-                     function_ref<void(Diagnostic &)> reasonCallback) override;
-
-protected:
   // Look over the provided operands for any defining operations that should
   // be re-added to the worklist. This function should be called when an
   // operation is modified or removed, as it may trigger further
   // simplifications.
   template <typename Operands>
   void addToWorklist(Operands &&operands);
+
+  // If an operation is about to be removed, make sure it is not in our
+  // worklist anymore because we'd get dangling references to it.
+  void notifyOperationRemoved(Operation *op) override;
+
+//===----------------------------------------------------------------------===//
+// END copied from mlir/lib/Transforms/Utils/GreedyPatternRewriteDriver.cpp
+//===----------------------------------------------------------------------===//
+  // When the root of a pattern is about to be replaced, it can trigger
+  // simplifications to its users - make sure to add them to the worklist
+  // before the root is changed.
+  void notifyOperationReplaced(Operation *op, ValueRange newValues) override;
+//===----------------------------------------------------------------------===//
+// BEGIN copied from mlir/lib/Transforms/Utils/GreedyPatternRewriteDriver.cpp
+//===----------------------------------------------------------------------===//
+
+  /// PatternRewriter hook for notifying match failure reasons.
+  void
+  notifyMatchFailure(Operation *op,
+                     function_ref<void(Diagnostic &)> reasonCallback) override;
 
   /// The low-level pattern applicator.
   PatternApplicator matcher;
@@ -92,8 +107,14 @@ private:
   /// Configuration information for how to simplify.
   GreedyRewriteConfig config;
 
+//===----------------------------------------------------------------------===//
+// END copied from mlir/lib/Transforms/Utils/GreedyPatternRewriteDriver.cpp
+//===----------------------------------------------------------------------===//
   /// The pattern rewriter to use.
   PatternRewriterListener rewriter;
+//===----------------------------------------------------------------------===//
+// BEGIN copied from mlir/lib/Transforms/Utils/GreedyPatternRewriteDriver.cpp
+//===----------------------------------------------------------------------===//
 
 #ifndef NDEBUG
   /// A logger used to emit information during the application process.
@@ -102,6 +123,9 @@ private:
 };
 } // namespace
 
+//===----------------------------------------------------------------------===//
+// END copied from mlir/lib/Transforms/Utils/GreedyPatternRewriteDriver.cpp
+//===----------------------------------------------------------------------===//
 GreedyPatternRewriteDriver::GreedyPatternRewriteDriver(
     MLIRContext *ctx, const FrozenRewritePatternSet &patterns,
     const GreedyRewriteConfig &config, RewriteListener *listener)
@@ -110,6 +134,9 @@ GreedyPatternRewriteDriver::GreedyPatternRewriteDriver(
   rewriter.addListener(this);
   if (listener)
     rewriter.addListener(listener);
+//===----------------------------------------------------------------------===//
+// BEGIN copied from mlir/lib/Transforms/Utils/GreedyPatternRewriteDriver.cpp
+//===----------------------------------------------------------------------===//
 
   worklist.reserve(64);
 
@@ -337,6 +364,9 @@ void GreedyPatternRewriteDriver::notifyOperationRemoved(Operation *op) {
   });
 }
 
+//===----------------------------------------------------------------------===//
+// END copied from mlir/lib/Transforms/Utils/GreedyPatternRewriteDriver.cpp
+//===----------------------------------------------------------------------===//
 void GreedyPatternRewriteDriver::notifyOperationReplaced(Operation *op,
                                                          ValueRange newValues) {
   LLVM_DEBUG({
@@ -347,6 +377,9 @@ void GreedyPatternRewriteDriver::notifyOperationReplaced(Operation *op,
     for (auto *user : result.getUsers())
       addToWorklist(user);
 }
+//===----------------------------------------------------------------------===//
+// BEGIN copied from mlir/lib/Transforms/Utils/GreedyPatternRewriteDriver.cpp
+//===----------------------------------------------------------------------===//
 
 void GreedyPatternRewriteDriver::notifyMatchFailure(
     Operation *op, function_ref<void(Diagnostic &)> reasonCallback) {
@@ -363,9 +396,15 @@ void GreedyPatternRewriteDriver::notifyMatchFailure(
 /// in the result operation regions. Note: This does not apply patterns to the
 /// top-level operation itself.
 ///
+//===----------------------------------------------------------------------===//
+// END copied from mlir/lib/Transforms/Utils/GreedyPatternRewriteDriver.cpp
+//===----------------------------------------------------------------------===//
 LogicalResult mlir::applyPatternsAndFoldGreedily(
     MutableArrayRef<Region> regions, const FrozenRewritePatternSet &patterns,
     const GreedyRewriteConfig &config, RewriteListener *listener) {
+//===----------------------------------------------------------------------===//
+// BEGIN copied from mlir/lib/Transforms/Utils/GreedyPatternRewriteDriver.cpp
+//===----------------------------------------------------------------------===//
   if (regions.empty())
     return success();
 
@@ -380,8 +419,14 @@ LogicalResult mlir::applyPatternsAndFoldGreedily(
          "patterns can only be applied to operations IsolatedFromAbove");
 
   // Start the pattern driver.
+//===----------------------------------------------------------------------===//
+// END copied from mlir/lib/Transforms/Utils/GreedyPatternRewriteDriver.cpp
+//===----------------------------------------------------------------------===//
   GreedyPatternRewriteDriver driver(regions[0].getContext(), patterns, config,
                                     listener);
+//===----------------------------------------------------------------------===//
+// BEGIN copied from mlir/lib/Transforms/Utils/GreedyPatternRewriteDriver.cpp
+//===----------------------------------------------------------------------===//
   bool converged = driver.simplify(regions);
   LLVM_DEBUG(if (!converged) {
     llvm::dbgs() << "The pattern rewrite doesn't converge after scanning "

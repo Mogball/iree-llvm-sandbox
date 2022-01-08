@@ -27,12 +27,12 @@ struct TestListener : public RewriteListener {
   }
 };
 
-struct TestCanonicalizePass : public PassWrapper<TestCanonicalizePass, Pass> {
-  TestCanonicalizePass() = default;
-  TestCanonicalizePass(const TestCanonicalizePass &other)
+struct TestListenerCanonicalizePass : public PassWrapper<TestListenerCanonicalizePass, Pass> {
+  TestListenerCanonicalizePass() = default;
+  TestListenerCanonicalizePass(const TestListenerCanonicalizePass &other)
       : PassWrapper(other) {}
 
-  StringRef getArgument() const final { return "test-canonicalize"; }
+  StringRef getArgument() const final { return "test-listener-canonicalize"; }
   StringRef getDescription() const final { return "Test canonicalize pass."; }
 
   void runOnOperation() override {
@@ -58,11 +58,11 @@ struct TestCanonicalizePass : public PassWrapper<TestCanonicalizePass, Pass> {
       llvm::cl::init(false)};
 };
 
-struct TestCSEPass : public PassWrapper<TestCSEPass, Pass> {
-  TestCSEPass() = default;
-  TestCSEPass(const TestCSEPass &other) : PassWrapper(other) {}
+struct TestListenerCSEPass : public PassWrapper<TestListenerCSEPass, Pass> {
+  TestListenerCSEPass() = default;
+  TestListenerCSEPass(const TestListenerCSEPass &other) : PassWrapper(other) {}
 
-  StringRef getArgument() const final { return "test-cse"; }
+  StringRef getArgument() const final { return "test-listener-cse"; }
   StringRef getDescription() const final { return "Test CSE pass."; }
 
   void runOnOperation() override {
@@ -87,8 +87,8 @@ struct TestCSEPass : public PassWrapper<TestCSEPass, Pass> {
 namespace mlir {
 namespace test_ext {
 void registerTestListenerPasses() {
-  PassRegistration<TestCanonicalizePass>();
-  PassRegistration<TestCSEPass>();
+  PassRegistration<TestListenerCanonicalizePass>();
+  PassRegistration<TestListenerCSEPass>();
 }
 } // namespace test_ext
 } // namespace mlir

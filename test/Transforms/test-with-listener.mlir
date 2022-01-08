@@ -1,5 +1,5 @@
-// RUN: mlir-proto-opt -test-canonicalize='listener=1' %s | FileCheck %s --check-prefix CANON
-// RUN: mlir-proto-opt -test-cse='listener=1' %s | FileCheck %s --check-prefix CSE
+// RUN: mlir-proto-opt -test-listener-canonicalize='listener=1' %s | FileCheck %s --check-prefix CANON
+// RUN: mlir-proto-opt -test-listener-cse='listener=1' %s | FileCheck %s --check-prefix CSE
 
 func @test_canonicalize(%arg0: i32) -> (i32, i32) {
   // CANON: REPLACED arith.addi

@@ -1,4 +1,4 @@
-// RUN: mlir-proto-opt %s -allow-unregistered-dialect -test-canonicalize --split-input-file | FileCheck %s
+// RUN: mlir-proto-opt %s -allow-unregistered-dialect -test-listener-canonicalize --split-input-file | FileCheck %s
 
 // CHECK-LABEL: @select_same_val
 //       CHECK:   return %arg1
